@@ -18,8 +18,18 @@ from django.contrib import admin
 from django.urls import path
 from strawberry.django.views import AsyncGraphQLView
 from core.schema import schema
+from django.conf import settings
+from django.conf.urls.static import static
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+import core.models as models
 
+admin.site.register(models.Company)
+admin.site.register(models.User)
+admin.site.register(models.ItemCategory)
+admin.site.register(models.Item)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('graphql/', AsyncGraphQLView.as_view(schema=schema)),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += staticfiles_urlpatterns()
