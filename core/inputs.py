@@ -26,3 +26,12 @@ class CreateUserInput:
     password: str = required('128 chars max')
     first_name: str = required('50 chars max')
     last_name: str = required('50 chars max')
+
+
+@sb.input
+class UpdateUserInput:
+    id: sb.ID = required()
+    password: Optional[str] = optional('128 chars max')
+    first_name: Optional[str] = optional('50 chars max')
+    last_name: Optional[str] = optional('50 chars max')
+    is_active: Optional[bool] = optional('True / False')

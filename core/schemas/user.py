@@ -106,3 +106,15 @@ class Mutation:
         await user.set_password(data.password)
         await user.asave()
         return user
+
+    @sb.mutation
+    async def update_user(
+        root, info,
+        data: inputs.UpdateUserInput
+    ) -> types.UserType:
+        user = await User.objects.aget(pk=data.id)
+        set_attributes(user, data)
+        if data.password:
+            await user.set_password(data.password)
+        await user.asave()
+        return user

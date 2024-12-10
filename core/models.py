@@ -23,6 +23,11 @@ class Company(models.Model):
     def __str__(self):
         return self.name
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['name'])
+        ]
+
 
 class User(models.Model):
     company = models.ForeignKey(
