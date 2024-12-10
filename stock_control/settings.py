@@ -21,7 +21,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-i5$=xe34$+5#cw5z*lc_ny6ti1qbhu_qvcb#dkr#nqg=8%lbt#'
-
+JWT_SECRET = SECRET_KEY
+JWT_ALGORITHM = 'HS256'
+EXP_SECONDS = 180
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -100,7 +102,7 @@ STRAWBERRY_DJANGO = {
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
-
+AUTH_USER_MODEL = 'core.User'
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',

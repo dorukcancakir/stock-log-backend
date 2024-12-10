@@ -38,6 +38,7 @@ class UserType:
     first_name: sb.auto
     last_name: sb.auto
     role: sb.auto
+    is_active: sb.auto
     created_at: sb.auto
     updated_at: sb.auto
 
@@ -61,3 +62,9 @@ class ItemType:
     min_quantity: sb.auto
     image: sb.auto
     unit_of_measurement: sb.auto
+
+
+@sb.type
+class GetTokenResponse:
+    user: UserType
+    token: str

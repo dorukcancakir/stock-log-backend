@@ -1,13 +1,16 @@
-from django.contrib.auth import get_user_model
 from json import dumps
 import strawberry as sb
 from typing import List, Optional
 from core.decorators import permission_required
+from core.models import User
 import core.types as types
-from core.utils import paginate
+from core.utils import paginate, set_attributes
+from strawberry.exceptions import StrawberryGraphQLError as Error
+from django.conf import settings
+from datetime import datetime, timedelta, UTC
+from jwt import encode
+import core.inputs as inputs
 
-
-User = get_user_model()
 manager = User.objects
 
 
@@ -32,6 +35,7 @@ class Query:
         return user
 
     @sb.field
+    @permission_required('ADMIN')
     async def users(
         root, info,
         id: Optional[sb.ID] = None,
@@ -62,3 +66,43 @@ class Query:
             users = search_name(users, name)
         count = await users.acount()
         return count
+
+
+def create_token(email):
+    secret, algorithm = settings.JWT_SECRET, settings.JWT_ALGORITHM
+    exp = datetime.now(UTC) + timedelta(days=14)
+    payload = {'email': email, 'exp': exp}
+    token = encode(payload, secret, algorithm)
+    return token
+
+
+@sb.type
+class Mutation:
+    @sb.mutation
+    async def get_token(
+        root, info,
+        data: inputs.GetTokenInput
+    ) -> types.GetTokenResponse:
+        try:
+            user = await manager.aget(email=data.email)
+        except User.DoesNotExist:
+            raise Error(dumps({'code': 'ERR010'}))
+        if not user.is_active:
+            raise Error(dumps({'code': 'ERR010'}))
+        password_valid = await user.acheck_password(data.password)
+        if not password_valid:
+            raise Error(dumps({'code': 'ERR010'}))
+        token = create_token(data.email)
+        return types.GetTokenResponse(user=user, token=token)
+
+    @sb.mutation
+    async def create_user(
+        root, info,
+        data: inputs.CreateUserInput
+    ) -> types.UserType:
+        user = User()
+        set_attributes(user, data)
+        user.company_id = 1
+        await user.set_password(data.password)
+        await user.asave()
+        return user

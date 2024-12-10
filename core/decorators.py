@@ -1,13 +1,11 @@
 from django.conf import settings
-from django.contrib.auth import get_user_model
 from json import dumps
 from jwt import decode, DecodeError, ExpiredSignatureError
 from functools import wraps
 from strawberry.exceptions import StrawberryGraphQLError as Error
 from typing import Any, AsyncGenerator, Optional
 from core.enums import Role
-
-User = get_user_model()
+from core.models import User
 
 
 def permission_required(role: Optional[Role] = None):
