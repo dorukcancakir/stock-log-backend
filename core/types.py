@@ -1,6 +1,7 @@
 import strawberry as sb
 import strawberry_django as sb_django
 import core.models as models
+import core.enums as enums
 
 
 def description(string):
@@ -37,14 +38,37 @@ class UserType:
     email: sb.auto
     first_name: sb.auto
     last_name: sb.auto
-    role: sb.auto
+    role: enums.Role
     is_active: sb.auto
     created_at: sb.auto
     updated_at: sb.auto
 
+    @sb_django.field(only=['first_name', 'last_name'])
+    def name(self) -> str:
+        return f'{self.first_name} {self.last_name}'
+
+
+@sb_django.filter(models.User, lookups=True)
+class UserFilter:
+    id: sb.auto
+    email: sb.auto
+    first_name: sb.auto
+    last_name: sb.auto
+    role: enums.Role
+    is_active: sb.auto
+
 
 @sb_django.type(models.ItemCategory)
 class ItemCategoryType:
+    id: sb.auto
+    company: CompanyType
+    name: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
+@sb_django.type(models.ItemTag)
+class ItemTagType:
     id: sb.auto
     company: CompanyType
     name: sb.auto
@@ -57,6 +81,7 @@ class ItemType:
     id: sb.auto
     company: CompanyType
     category: ItemCategoryType
+    tag: ItemTagType
     name: sb.auto
     quantity: sb.auto
     min_quantity: sb.auto

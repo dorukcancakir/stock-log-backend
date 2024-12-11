@@ -1,6 +1,7 @@
 from json import dumps
 import strawberry as sb
 from typing import List, Optional
+from strawberry_django.filters import apply
 from core.decorators import permission_required
 from core.models import User
 import core.types as types
@@ -40,6 +41,7 @@ class Query:
         root, info,
         id: Optional[sb.ID] = None,
         name: Optional[str] = None,
+        filters: Optional[types.UserFilter] = None,
         skip: Optional[int] = None,
         first: Optional[int] = None
     ) -> List[types.UserType]:
@@ -48,6 +50,8 @@ class Query:
             users = users.filter(pk=id)
         if name is not None:
             users = search_name(users, name)
+        if filters:
+            users = apply(filters, users)
         users = paginate(users, skip, first)
         users = [item async for item in users]
         return users
@@ -58,12 +62,15 @@ class Query:
         root, info,
         id: Optional[sb.ID] = None,
         name: Optional[str] = None,
+        filters: Optional[types.UserFilter] = None,
     ) -> int:
         users = manager.all()
         if id is not None:
             users = users.filter(pk=id)
         if name is not None:
             users = search_name(users, name)
+        if filters:
+            users = apply(filters, users)
         count = await users.acount()
         return count
 
@@ -112,9 +119,21 @@ class Mutation:
         root, info,
         data: inputs.UpdateUserInput
     ) -> types.UserType:
-        user = await User.objects.aget(pk=data.id)
+        user = await manager.aget(pk=data.id)
         set_attributes(user, data)
         if data.password:
             await user.set_password(data.password)
         await user.asave()
         return user
+
+    @sb.mutation
+    async def delete_user(
+        root, info,
+        id: sb.ID,
+        delete_permanent: Optional[bool] = False
+    ) -> types.SuccessResponse:
+        if delete_permanent:
+            await manager.filter(pk=id).adelete()
+            return types.SuccessResponse(success=True)
+        await manager.filter(pk=id).aupdate(is_active=False)
+        return types.SuccessResponse(success=True)

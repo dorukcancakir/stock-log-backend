@@ -102,11 +102,31 @@ class ItemCategory(models.Model):
         ]
 
 
+class ItemTag(models.Model):
+    company = models.ForeignKey(
+        Company, related_name='item_tags', on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        unique_together = ('company', 'name')
+        indexes = [
+            models.Index(fields=['company']),
+            models.Index(fields=['name']),
+        ]
+
+
 class Item(models.Model):
     company = models.ForeignKey(
         Company, related_name='items', on_delete=models.CASCADE)
     category = models.ForeignKey(
         ItemCategory, related_name='items', on_delete=models.CASCADE)
+    tag = models.ForeignKey(
+        ItemTag, related_name='items', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
     quantity = models.PositiveSmallIntegerField(default=1)
     min_quantity = models.PositiveSmallIntegerField(default=0)
@@ -118,10 +138,11 @@ class Item(models.Model):
         return self.name
 
     class Meta:
-        unique_together = ('company', 'category', 'name')
+        unique_together = ('company', 'category', 'tag', 'name')
         indexes = [
             models.Index(fields=['company']),
             models.Index(fields=['category']),
+            models.Index(fields=['tag']),
             models.Index(fields=['name']),
             models.Index(fields=['quantity']),
             models.Index(fields=['min_quantity']),
