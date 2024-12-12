@@ -31,6 +31,13 @@ class CompanyType:
     created_at: sb.auto
 
 
+@sb_django.filter(models.Company, lookups=True)
+class CompanyFilter:
+    id: sb.auto
+    name: sb.auto
+    created_at: sb.auto
+
+
 @sb_django.type(models.User)
 class UserType:
     id: sb.auto
@@ -56,6 +63,14 @@ class UserFilter:
     last_name: sb.auto
     role: enums.Role
     is_active: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
+@sb.type
+class GetTokenResponse:
+    user: UserType
+    token: str
 
 
 @sb_django.type(models.ItemCategory)
@@ -67,10 +82,26 @@ class ItemCategoryType:
     updated_at: sb.auto
 
 
+@sb_django.filter(models.ItemCategory, lookups=True)
+class ItemCategoryFilter:
+    id: sb.auto
+    name: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
 @sb_django.type(models.ItemTag)
 class ItemTagType:
     id: sb.auto
     company: CompanyType
+    name: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
+@sb_django.filter(models.ItemTag, lookups=True)
+class ItemTagFilter:
+    id: sb.auto
     name: sb.auto
     created_at: sb.auto
     updated_at: sb.auto
@@ -89,7 +120,13 @@ class ItemType:
     unit_of_measurement: sb.auto
 
 
-@sb.type
-class GetTokenResponse:
-    user: UserType
-    token: str
+@sb_django.filter(models.Item, lookups=True)
+class ItemFilter:
+    id: sb.auto
+    category: ItemCategoryType
+    tag: ItemTagType
+    name: sb.auto
+    quantity: sb.auto
+    min_quantity: sb.auto
+    image: sb.auto
+    unit_of_measurement: sb.auto
