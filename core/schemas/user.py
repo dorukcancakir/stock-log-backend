@@ -107,9 +107,10 @@ class Mutation:
         root, info,
         data: inputs.CreateUserInput
     ) -> types.UserType:
+        company_id = info.context['user'].company_id
         user = User()
         set_attributes(user, data)
-        user.company_id = 1
+        user.company_id = company_id
         await user.set_password(data.password)
         await user.asave()
         return user
