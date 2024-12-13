@@ -1,4 +1,4 @@
-FROM python:3.13-slim
+FROM python:3.13.1-slim
 
 RUN apt-get update && apt-get install -y supervisor procps gcc python3-dev default-libmysqlclient-dev build-essential pkg-config && rm -rf /var/lib/apt/lists/*
 
