@@ -29,6 +29,10 @@ EXP_SECONDS = 180
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+CSRF_TRUSTED_ORIGINS = [
+    'https://stock-log.backendstocklog.work.gd',
+    'https://*.backendstocklog.work.gd',
+]
 
 
 # Application definition
