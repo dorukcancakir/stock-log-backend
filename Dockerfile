@@ -1,6 +1,6 @@
 FROM python:3.13-slim
 
-RUN apt-get update && apt-get install -y supervisor procps gcc && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y supervisor procps gcc python3-dev default-libmysqlclient-dev build-essential pkg-config && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt /app/requirements.txt
 WORKDIR /app
