@@ -1,17 +1,22 @@
-# Python 3.13 tabanlı bir Docker imajı
 FROM python:3.13-slim
 
-# Çalışma dizinini ayarla
+RUN apt-get update && apt-get install -y supervisor procps gcc && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt /app/requirements.txt
 WORKDIR /app
+RUN pip install -r requirements.txt --no-cache-dir
+COPY . /app
 
-# Gereksinim dosyasını kopyala
-COPY requirements.txt .
+ARG DJANGO_SETTINGS_MODULE
+ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
 
-# Python bağımlılıklarını yükle
-RUN pip install --no-cache-dir -r requirements.txt
+ARG SUPERVISORD_FILE
+ENV SUPERVISORD_FILE=$SUPERVISORD_FILE
+COPY $SUPERVISORD_FILE /etc/supervisor/conf.d/supervisord.conf
 
-# Proje dosyalarını kopyala
-COPY . .
+ARG ENTRYPOINT_FILE
+COPY $ENTRYPOINT_FILE ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+EXPOSE 80
 
-# Django uygulaması için başlangıç komutu
-CMD ["uvicorn", "stock_log.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
+ENTRYPOINT ["/bin/sh", "./entrypoint.sh"]
