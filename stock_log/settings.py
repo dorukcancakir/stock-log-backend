@@ -81,10 +81,10 @@ ASGI_APPLICATION = 'stock_log.asgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'stock_control',
-        'USER': 'root',
-        'PASSWORD': 'printDorukcan',
-        'HOST': 'localhost',
+        'NAME': 'stock_log',
+        'USER': 'stocklogadmin',
+        'PASSWORD': 'aY3ztL866/tO',
+        'HOST': '94.154.32.139',
         'PORT': '3306',
     }
 }
