@@ -1,5 +1,5 @@
 """
-URL configuration for stock_control project.
+URL configuration for stock_log project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/5.1/topics/http/urls/

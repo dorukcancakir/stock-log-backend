@@ -1,5 +1,5 @@
 """
-ASGI config for stock_control project.
+ASGI config for stock_log project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -13,7 +13,7 @@ from strawberry.channels import GraphQLProtocolTypeRouter
 from core.middlewares import CorsMiddleware
 
 
-environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_control.settings')
+environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_log.settings')
 django_application = get_asgi_application()
 
 
