@@ -6,7 +6,7 @@ COPY requirements.txt /app/requirements.txt
 WORKDIR /app
 RUN pip install -r requirements.txt --no-cache-dir
 COPY . /app
-
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN chmod +x ./entrypoint.sh
 EXPOSE 80
 
