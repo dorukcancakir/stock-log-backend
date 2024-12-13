@@ -7,15 +7,6 @@ WORKDIR /app
 RUN pip install -r requirements.txt --no-cache-dir
 COPY . /app
 
-ARG DJANGO_SETTINGS_MODULE
-ENV DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-
-ARG SUPERVISORD_FILE
-ENV SUPERVISORD_FILE=$SUPERVISORD_FILE
-COPY $SUPERVISORD_FILE /etc/supervisor/conf.d/supervisord.conf
-
-ARG ENTRYPOINT_FILE
-COPY $ENTRYPOINT_FILE ./entrypoint.sh
 RUN chmod +x ./entrypoint.sh
 EXPOSE 80
 
