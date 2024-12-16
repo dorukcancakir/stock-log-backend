@@ -23,15 +23,12 @@ class Query:
     @permission_required()
     async def item_tags(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemTagFilter] = None,
         skip: Optional[int] = None,
         first: Optional[int] = None
     ) -> List[types.ItemTagType]:
         company_id = info.context['user'].company_id
         item_tags = manager.filter(company_id=company_id)
-        if id is not None:
-            item_tags = item_tags.filter(pk=id)
         if filters:
             item_tags = apply(filters, item_tags)
         item_tags = paginate(item_tags, skip, first)
@@ -42,13 +39,10 @@ class Query:
     @permission_required()
     async def item_tag_count(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemTagFilter] = None,
     ) -> int:
         company_id = info.context['user'].company_id
         item_tags = manager.filter(company_id=company_id)
-        if id is not None:
-            item_tags = item_tags.filter(pk=id)
         if filters:
             item_tags = apply(filters, item_tags)
         count = await item_tags.acount()
@@ -62,8 +56,10 @@ class Mutation:
         root, info,
         data: inputs.CreateItemTagInput
     ) -> types.ItemTagType:
+        company_id = info.context['user'].company_id
         item_tag = ItemTag()
         set_attributes(item_tag, data)
+        item_tag.company_id = company_id
         await item_tag.asave()
         return item_tag
 

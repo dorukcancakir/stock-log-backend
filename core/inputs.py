@@ -13,8 +13,22 @@ def optional(description=None):
 
 
 @sb.input
+class CreateInventoryItemInput:
+    inventory_id: sb.ID = required()
+    item_id: sb.ID = required()
+    quantity: Optional[int] = optional('Default 0')
+    min_quantity: Optional[int] = optional('Default 0')
+
+
+@sb.input
+class UpdateInventoryItemInput:
+    id: sb.ID = required()
+    quantity: Optional[int] = optional('Default 0')
+    min_quantity: Optional[int] = optional('Default 0')
+
+
+@sb.input
 class CreateItemCategoryInput:
-    company_id: sb.ID = required()
     name: str = required('50 chars max')
 
 
@@ -26,7 +40,6 @@ class UpdateItemCategoryInput:
 
 @sb.input
 class CreateItemTagInput:
-    company_id: sb.ID = required()
     name: str = required('50 chars max')
 
 
@@ -38,12 +51,9 @@ class UpdateItemTagInput:
 
 @sb.input
 class CreateItemInput:
-    company_id: sb.ID = required()
     category_id: sb.ID = required()
     tag_id: sb.ID = required()
     name: str = required('50 chars max')
-    quantity: Optional[int] = optional('Default 1')
-    min_quantity: Optional[int] = optional('Default 0')
     image: Upload = required()
     unit_of_measurement: Optional[enums.Measurement] = optional(
         'Default PIECE')
@@ -52,12 +62,9 @@ class CreateItemInput:
 @sb.input
 class UpdateItemInput:
     id: sb.ID = required()
-    company_id: Optional[sb.ID] = optional()
     category_id: Optional[sb.ID] = optional()
     tag_id: Optional[sb.ID] = optional()
     name: Optional[str] = optional('50 chars max')
-    quantity: Optional[int] = optional('Default 1')
-    min_quantity: Optional[int] = optional('Default 0')
     image: Optional[Upload] = optional()
     unit_of_measurement: Optional[enums.Measurement] = optional(
         'Default PIECE')

@@ -73,6 +73,38 @@ class GetTokenResponse:
     token: str
 
 
+@sb_django.type(models.Inventory)
+class InventoryType:
+    id: sb.auto
+    company: CompanyType
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
+@sb_django.type(models.InventoryItem)
+class InventoryItemType:
+    id: sb.auto
+    company: CompanyType
+    inventory: InventoryType
+    item: 'ItemType'
+    quantity: sb.auto
+    min_quantity: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
+@sb_django.filter(models.InventoryItem, lookups=True)
+class InventoryItemFilter:
+    id: sb.auto
+    company: CompanyType
+    inventory: InventoryType
+    item: 'ItemType'
+    quantity: sb.auto
+    min_quantity: sb.auto
+    created_at: sb.auto
+    updated_at: sb.auto
+
+
 @sb_django.type(models.ItemCategory)
 class ItemCategoryType:
     id: sb.auto
@@ -114,8 +146,6 @@ class ItemType:
     category: ItemCategoryType
     tag: ItemTagType
     name: sb.auto
-    quantity: sb.auto
-    min_quantity: sb.auto
     image: sb.auto
     unit_of_measurement: sb.auto
 
@@ -126,7 +156,5 @@ class ItemFilter:
     category: ItemCategoryType
     tag: ItemTagType
     name: sb.auto
-    quantity: sb.auto
-    min_quantity: sb.auto
     image: sb.auto
     unit_of_measurement: sb.auto

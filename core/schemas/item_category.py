@@ -23,15 +23,12 @@ class Query:
     @permission_required()
     async def item_categories(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemCategoryFilter] = None,
         skip: Optional[int] = None,
         first: Optional[int] = None
     ) -> List[types.ItemCategoryType]:
         company_id = info.context['user'].company_id
         item_categories = manager.filter(company_id=company_id)
-        if id is not None:
-            item_categories = item_categories.filter(pk=id)
         if filters:
             item_categories = apply(filters, item_categories)
         item_categories = paginate(item_categories, skip, first)
@@ -42,13 +39,10 @@ class Query:
     @permission_required()
     async def item_category_count(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemCategoryFilter] = None,
     ) -> int:
         company_id = info.context['user'].company_id
         item_categories = manager.filter(company_id=company_id)
-        if id is not None:
-            item_categories = item_categories.filter(pk=id)
         if filters:
             item_categories = apply(filters, item_categories)
         count = await item_categories.acount()
@@ -62,8 +56,10 @@ class Mutation:
         root, info,
         data: inputs.CreateItemCategoryInput
     ) -> types.ItemCategoryType:
+        company_id = info.context['user'].company_id
         item_category = ItemCategory()
         set_attributes(item_category, data)
+        item_category.company_id = company_id
         await item_category.asave()
         return item_category
 

@@ -84,6 +84,21 @@ class User(models.Model):
         ]
 
 
+class Inventory(models.Model):
+    company = models.OneToOneField(
+        Company, related_name='inventory', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Inventory for {self.company.name}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['company']),
+        ]
+
+
 class ItemCategory(models.Model):
     company = models.ForeignKey(
         Company, related_name='item_categories', on_delete=models.CASCADE)
@@ -128,8 +143,6 @@ class Item(models.Model):
     tag = models.ForeignKey(
         ItemTag, related_name='items', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    quantity = models.PositiveSmallIntegerField(default=1)
-    min_quantity = models.PositiveSmallIntegerField(default=0)
     image = models.FileField(upload_to=upload_to)
     unit_of_measurement = models.CharField(
         max_length=10, choices=enums.Measurement.choices, default=enums.Measurement.PIECE)
@@ -144,6 +157,30 @@ class Item(models.Model):
             models.Index(fields=['category']),
             models.Index(fields=['tag']),
             models.Index(fields=['name']),
+        ]
+
+
+class InventoryItem(models.Model):
+    company = models.ForeignKey(
+        Company, related_name='inventory_items', on_delete=models.CASCADE)
+    inventory = models.ForeignKey(
+        Inventory, related_name='inventory_items', on_delete=models.CASCADE)
+    item = models.ForeignKey(
+        Item, related_name='inventory_items', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=0)
+    min_quantity = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.item.name} in {self.inventory.company.name}"
+
+    class Meta:
+        unique_together = ('company', 'inventory', 'item')
+        indexes = [
+            models.Index(fields=['company']),
+            models.Index(fields=['inventory']),
+            models.Index(fields=['item']),
             models.Index(fields=['quantity']),
             models.Index(fields=['min_quantity']),
         ]

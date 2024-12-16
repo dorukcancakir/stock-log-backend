@@ -23,15 +23,12 @@ class Query:
     @permission_required()
     async def items(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemFilter] = None,
         skip: Optional[int] = None,
         first: Optional[int] = None
     ) -> List[types.ItemType]:
         company_id = info.context['user'].company_id
         items = manager.filter(company_id=company_id)
-        if id is not None:
-            items = items.filter(pk=id)
         if filters:
             items = apply(filters, items)
         items = paginate(items, skip, first)
@@ -42,13 +39,10 @@ class Query:
     @permission_required()
     async def item_count(
         root, info,
-        id: Optional[sb.ID] = None,
         filters: Optional[types.ItemFilter] = None,
     ) -> int:
         company_id = info.context['user'].company_id
         items = manager.filter(company_id=company_id)
-        if id is not None:
-            items = items.filter(pk=id)
         if filters:
             items = apply(filters, items)
         count = await items.acount()
@@ -62,8 +56,10 @@ class Mutation:
         root, info,
         data: inputs.CreateItemInput
     ) -> types.ItemType:
+        company_id = info.context['user'].company_id
         item = Item()
         set_attributes(item, data)
+        item.company_id = company_id
         await item.asave()
         return item
 
