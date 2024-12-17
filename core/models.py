@@ -184,3 +184,28 @@ class InventoryItem(models.Model):
             models.Index(fields=['quantity']),
             models.Index(fields=['min_quantity']),
         ]
+
+
+class InventoryTransactionLog(models.Model):
+    company = models.ForeignKey(
+        Company, related_name='inventory_transaction_logs', on_delete=models.CASCADE)
+    user = models.ForeignKey(
+        User, related_name='inventory_transaction_logs', on_delete=models.CASCADE)
+    inventory_item = models.ForeignKey(
+        InventoryItem, related_name='transaction_logs', on_delete=models.CASCADE)
+    transaction_type = models.CharField(
+        max_length=10, choices=enums.TransactionType.choices)
+    quantity = models.PositiveIntegerField(default=0)
+    previous_quantity = models.PositiveIntegerField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.transaction_type} {self.quantity} {self.inventory_item} by {self.user}"
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['company']),
+            models.Index(fields=['user']),
+            models.Index(fields=['inventory_item']),
+            models.Index(fields=['transaction_type']),
+        ]

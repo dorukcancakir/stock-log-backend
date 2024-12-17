@@ -3,6 +3,13 @@ from strawberry import enum
 
 
 @enum
+class TransactionType(TextChoices):
+    NEW_ITEM = 'NEW_ITEM'
+    INCREASE = 'INCREASE'
+    DECREASE = 'DECREASE'
+
+
+@enum
 class Measurement(TextChoices):
     PIECE = 'PIECE'
     LITRE = 'LITRE'

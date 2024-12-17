@@ -105,6 +105,36 @@ class InventoryItemFilter:
     updated_at: sb.auto
 
 
+@sb_django.type(models.InventoryTransactionLog)
+class InventoryTransactionLogType:
+    id: sb.auto
+    company: CompanyType
+    user: UserType
+    inventory_item: InventoryItemType
+    transaction_type: enums.TransactionType
+    quantity: sb.auto
+    previous_quantity: sb.auto
+    created_at: sb.auto
+
+
+@sb_django.filter(models.InventoryTransactionLog, lookups=True)
+class InventoryTransactionLogFilter:
+    id: sb.auto
+    company: CompanyType
+    user: UserType
+    inventory_item: InventoryItemType
+    transaction_type: enums.TransactionType
+    quantity: sb.auto
+    previous_quantity: sb.auto
+    created_at: sb.auto
+
+
+@sb.type
+class InventoryTransactionLogSubscriptionType:
+    inventory_transaction_log: InventoryTransactionLogType
+    timestamp: int
+
+
 @sb_django.type(models.ItemCategory)
 class ItemCategoryType:
     id: sb.auto

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Inventory, InventoryItem, Item, ItemCategory, ItemTag, User, Company
+from .models import Inventory, InventoryItem, InventoryTransactionLog, Item, ItemCategory, ItemTag, User, Company
 
 
 class UserAdmin(admin.ModelAdmin):
@@ -13,6 +13,7 @@ class UserAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Company)
 admin.site.register(InventoryItem)
+admin.site.register(InventoryTransactionLog)
 admin.site.register(Inventory)
 admin.site.register(ItemCategory)
 admin.site.register(ItemTag)

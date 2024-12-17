@@ -1,4 +1,9 @@
 import strawberry as sb
+from core.models import InventoryTransactionLog, User
+from channels.layers import get_channel_layer
+from datetime import datetime
+
+channel_layer = get_channel_layer()
 
 
 def paginate(qs, skip, first, ordering=None):
@@ -50,3 +55,30 @@ def get_fields(data):
             continue
         fields[key] = value
     return fields
+
+
+async def create_inventory_transaction_log(company_id, user_id, inventory_item_id, transaction_type, quantity, previous_quantity):
+    data = {
+        'company_id': company_id,
+        'user_id': user_id,
+        'inventory_item_id': inventory_item_id,
+        'transaction_type': transaction_type,
+        'quantity': quantity,
+        'previous_quantity': previous_quantity
+    }
+    inventory_transaction_log = InventoryTransactionLog(**data)
+    await inventory_transaction_log.asave()
+    user_ids = list(User.objects.filter(
+        company_id=company_id).values_list('id', flat=True))
+    await broadcast_log(inventory_transaction_log.id, [user_ids])
+
+
+async def broadcast_log(id, receiver_ids):
+    message = {
+        'id': id,
+        'timestamp': int(datetime.now().timestamp())
+    }
+    payload = {'type': 'subscription', 'message': message}
+    for receiver_id in receiver_ids:
+        group_id = str(receiver_id)
+        await channel_layer.group_send(group_id, payload)

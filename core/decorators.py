@@ -12,46 +12,31 @@ def permission_required(role: Optional[Role] = None):
     def wrapper(func):
         @wraps(func)
         async def wrapped(root, info, **kwargs: Any):
-            def raise_error(code):
-                raise Error(dumps({'code': code}))
-
-            context = (
-                info.context.get('connection_params')
-                or info.context['request'].headers
-            )
-
-            token = context.get('authorization')
-            if not token:
-                raise_error('ERR001')
-
+            if 'connection_params' in info.context:
+                print('QWEQWE', info.context)
+                context = info.context['connection_params']
+                print('QWEQWE2', context)
+            else:
+                context = info.context['request'].headers
+            if 'authorization' not in context:
+                raise Error(dumps({'code': 'ERR001'}))
+            token = context['authorization']
+            secret, algorithm = settings.JWT_SECRET, settings.JWT_ALGORITHM
             try:
-                decoded_token = decode(
-                    token,
-                    settings.JWT_SECRET,
-                    algorithms=[settings.JWT_ALGORITHM]
-                )
+                decoded_token = decode(token, secret, algorithms=[algorithm])
             except DecodeError:
-                raise_error('ERR002')
+                raise Error(dumps({'code': 'ERR002'}))
             except ExpiredSignatureError:
-                raise_error('ERR003')
-
-            user_email = decoded_token.get('email')
-            if not user_email:
-                raise_error('ERR004')
-
+                raise Error(dumps({'code': 'ERR003'}))
             try:
-                user = await User.objects.aget(email=user_email)
+                user = await User.objects.aget(email=decoded_token['email'])
             except User.DoesNotExist:
-                raise_error('ERR010')
-
+                raise Error(dumps({'code': 'ERR010'}))
             if not user.is_active:
-                raise_error('ERR005')
-
-            if role and user.role != role:
-                raise_error('ERR006')
-
+                raise Error(dumps({'code': 'ERR002'}))
+            if role is not None and user.role != role:
+                raise Error(dumps({'code': 'ERR001'}))
             info.context['user'] = user
-
             func_instance = func(root, info, **kwargs)
             if isinstance(func_instance, AsyncGenerator):
                 return func_instance
