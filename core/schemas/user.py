@@ -36,7 +36,7 @@ class Query:
         return user
 
     @sb.field
-    @permission_required('ADMIN')
+    @permission_required()
     async def users(
         root, info,
         id: Optional[sb.ID] = None,
@@ -57,7 +57,7 @@ class Query:
         return users
 
     @sb.field
-    @permission_required('ADMIN')
+    @permission_required()
     async def user_count(
         root, info,
         id: Optional[sb.ID] = None,
