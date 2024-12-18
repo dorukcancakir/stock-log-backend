@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/asgi/
 from django.core.asgi import get_asgi_application
 from os import environ
 from strawberry.channels import GraphQLProtocolTypeRouter
+from core.middlewares import CorsMiddleware
 
 
 environ.setdefault('DJANGO_SETTINGS_MODULE', 'stock_log.settings')
@@ -23,3 +24,4 @@ application = GraphQLProtocolTypeRouter(
     schema,
     django_application=django_application,
 )
+application = CorsMiddleware(application)
