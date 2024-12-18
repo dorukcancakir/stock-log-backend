@@ -103,6 +103,7 @@ class Mutation:
         return types.GetTokenResponse(user=user, token=token)
 
     @sb.mutation
+    @permission_required()
     async def create_user(
         root, info,
         data: inputs.CreateUserInput
@@ -116,6 +117,7 @@ class Mutation:
         return user
 
     @sb.mutation
+    @permission_required()
     async def update_user(
         root, info,
         data: inputs.UpdateUserInput
@@ -128,6 +130,7 @@ class Mutation:
         return user
 
     @sb.mutation
+    @permission_required()
     async def delete_user(
         root, info,
         id: sb.ID,
