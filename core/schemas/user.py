@@ -108,6 +108,11 @@ class Mutation:
         root, info,
         data: inputs.CreateUserInput
     ) -> types.UserType:
+        if await manager.filter(email=data.email).acount() != 0:
+            user = await manager.aget(email=data.email)
+            user.is_active = True
+            await user.asave()
+            return user
         company_id = info.context['user'].company_id
         user = User()
         set_attributes(user, data)
