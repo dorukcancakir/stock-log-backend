@@ -1,3 +1,4 @@
+from typing import Optional
 import strawberry as sb
 import strawberry_django as sb_django
 import core.models as models
@@ -61,7 +62,7 @@ class UserFilter:
     email: sb.auto
     first_name: sb.auto
     last_name: sb.auto
-    role: enums.Role
+    role: Optional[enums.Role]
     is_active: sb.auto
     created_at: sb.auto
     updated_at: sb.auto
