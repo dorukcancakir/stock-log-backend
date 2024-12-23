@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 import strawberry as sb
 import strawberry_django as sb_django
 import core.models as models
@@ -141,6 +141,7 @@ class ItemCategoryType:
     id: sb.auto
     company: CompanyType
     name: sb.auto
+    items: List['ItemType']
     created_at: sb.auto
     updated_at: sb.auto
 
