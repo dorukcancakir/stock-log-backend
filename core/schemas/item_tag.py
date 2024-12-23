@@ -52,6 +52,7 @@ class Query:
 @sb.type
 class Mutation:
     @sb.mutation
+    @permission_required()
     async def create_item_tag(
         root, info,
         data: inputs.CreateItemTagInput
@@ -64,6 +65,7 @@ class Mutation:
         return item_tag
 
     @sb.mutation
+    @permission_required()
     async def update_item_tag(
         root, info,
         data: inputs.UpdateItemTagInput
@@ -74,6 +76,7 @@ class Mutation:
         return item_tag
 
     @sb.mutation
+    @permission_required()
     async def delete_item_tag(
         root, info,
         id: sb.ID

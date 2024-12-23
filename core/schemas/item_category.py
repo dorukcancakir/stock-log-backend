@@ -52,6 +52,7 @@ class Query:
 @sb.type
 class Mutation:
     @sb.mutation
+    @permission_required()
     async def create_item_category(
         root, info,
         data: inputs.CreateItemCategoryInput
@@ -64,6 +65,7 @@ class Mutation:
         return item_category
 
     @sb.mutation
+    @permission_required()
     async def update_item_category(
         root, info,
         data: inputs.UpdateItemCategoryInput
@@ -74,6 +76,7 @@ class Mutation:
         return item_category
 
     @sb.mutation
+    @permission_required()
     async def delete_item_category(
         root, info,
         id: sb.ID
