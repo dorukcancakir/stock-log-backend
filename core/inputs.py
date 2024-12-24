@@ -55,6 +55,8 @@ class CreateItemInput:
     tag_id: sb.ID = required()
     name: str = required('50 chars max')
     image: Upload = required()
+    quantity: int = required('Default 0')
+    min_quantity: int = required('Default 0')
     unit_of_measurement: Optional[enums.Measurement] = optional(
         'Default PIECE')
 

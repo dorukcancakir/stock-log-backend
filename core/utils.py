@@ -15,10 +15,10 @@ def paginate(qs, skip, first, ordering=None):
     return qs
 
 
-def set_attributes(instance, data, ignored=None):
+def set_attributes(instance, data, ignored=[]):
     data = sb.asdict(data)
     for attribute, value in data.items():
-        if attribute == ignored or value is sb.UNSET:
+        if attribute in ignored or value is sb.UNSET:
             continue
         if attribute[-3:] == '_id' and value is None:
             setattr(instance, attribute[:-3], value)

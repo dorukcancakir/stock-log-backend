@@ -2,7 +2,7 @@ import strawberry as sb
 from typing import List, Optional
 from strawberry_django.filters import apply
 from core.decorators import permission_required
-from core.models import Item
+from core.models import InventoryItem, Item
 import core.types as types
 from core.utils import paginate, set_attributes
 import core.inputs as inputs
@@ -59,9 +59,15 @@ class Mutation:
     ) -> types.ItemType:
         company_id = info.context['user'].company_id
         item = Item()
-        set_attributes(item, data)
+        set_attributes(item, data, ['quantity', 'min_quantity'])
         item.company_id = company_id
         await item.asave()
+        inventory_item = InventoryItem()
+        inventory_item.company_id = company_id
+        inventory_item.item = item
+        inventory_item.quantity = data.quantity
+        inventory_item.min_quantity = data.min_quantity
+        await inventory_item.asave()
         return item
 
     @sb.mutation
