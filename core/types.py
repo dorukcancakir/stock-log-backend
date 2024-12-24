@@ -159,6 +159,7 @@ class ItemTagType:
     id: sb.auto
     company: CompanyType
     name: sb.auto
+    items: List['ItemType']
     created_at: sb.auto
     updated_at: sb.auto
 
