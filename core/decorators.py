@@ -13,9 +13,7 @@ def permission_required(role: Optional[Role] = None):
         @wraps(func)
         async def wrapped(root, info, **kwargs: Any):
             if 'connection_params' in info.context:
-                print('QWEQWE', info.context)
                 context = info.context['connection_params']
-                print('QWEQWE2', context)
             else:
                 context = info.context['request'].headers
             if 'authorization' not in context:
