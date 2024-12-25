@@ -14,7 +14,7 @@ from core.schemas.item import Query as item_query
 from core.schemas.item import Mutation as item_mutation
 from core.schemas.user import Query as user_query
 from core.schemas.user import Mutation as user_mutation
-
+from strawberry_django.optimizer import DjangoOptimizerExtension
 
 queries = (
     company_query,
@@ -45,4 +45,5 @@ Mutation = merge_types('Mutation', mutations)
 Subscription = merge_types('Subscription', subscriptions)
 
 
-schema = Schema(query=Query, mutation=Mutation, subscription=Subscription)
+schema = Schema(query=Query, mutation=Mutation,
+                subscription=Subscription, extensions=[DjangoOptimizerExtension])
