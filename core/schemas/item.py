@@ -2,9 +2,10 @@ import strawberry as sb
 from typing import List, Optional
 from strawberry_django.filters import apply
 from core.decorators import permission_required
+from core.enums import TransactionType
 from core.models import InventoryItem, Item
 import core.types as types
-from core.utils import paginate, set_attributes
+from core.utils import create_inventory_transaction_log, paginate, set_attributes
 import core.inputs as inputs
 
 
@@ -57,6 +58,7 @@ class Mutation:
         root, info,
         data: inputs.CreateItemInput
     ) -> types.ItemType:
+        user_id = info.context['user'].id
         company_id = info.context['user'].company_id
         item = Item()
         set_attributes(item, data, ['quantity', 'min_quantity'])
@@ -68,6 +70,7 @@ class Mutation:
         inventory_item.quantity = data.quantity
         inventory_item.min_quantity = data.min_quantity
         await inventory_item.asave()
+        await create_inventory_transaction_log(company_id, user_id, inventory_item.id, TransactionType.NEW_ITEM, data.quantity, 0)
         return item
 
     @sb.mutation
