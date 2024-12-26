@@ -181,6 +181,7 @@ class ItemType:
     name: sb.auto
     image: str = resolve('image')
     unit_of_measurement: sb.auto
+    inventory_item: InventoryItemType
 
 
 @sb_django.filter(models.Item, lookups=True)
