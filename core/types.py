@@ -179,7 +179,7 @@ class ItemType:
     category: ItemCategoryType
     tag: ItemTagType
     name: sb.auto
-    image: sb.auto
+    image: str = resolve('image')
     unit_of_measurement: sb.auto
 
 
@@ -189,5 +189,5 @@ class ItemFilter:
     category: ItemCategoryType
     tag: ItemTagType
     name: sb.auto
-    image: sb.auto
+    image: str = resolve('image')
     unit_of_measurement: sb.auto

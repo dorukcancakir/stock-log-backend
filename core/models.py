@@ -143,7 +143,7 @@ class Item(models.Model):
     tag = models.ForeignKey(
         ItemTag, related_name='items', on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
-    image = models.FileField(upload_to=upload_to)
+    image = models.FileField(upload_to=upload_to, blank=True)
     unit_of_measurement = models.CharField(
         max_length=10, choices=enums.Measurement.choices, default=enums.Measurement.PIECE)
 
