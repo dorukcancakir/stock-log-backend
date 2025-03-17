@@ -71,7 +71,7 @@ This project is a backend service developed for stock control and management. Bu
 3. (Optional) Create and activate a virtual environment:
    ```bash
    python3 -m venv venv
-   source venv/bin/activate  # Windows için: venv\Scripts\activate
+   source venv/bin/activate  # For Windows: venv\Scripts\activate
    ```
 4. Install the required packages:
    ```bash
